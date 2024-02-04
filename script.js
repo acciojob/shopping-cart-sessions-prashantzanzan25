@@ -42,8 +42,12 @@ function addToCart(productId) {
 function updateSessionStorage() {
   const cartItems = [];
   const cartList = document.getElementById("cart-list");
-  cartList.childNodes.forEach(li => cartItems.push(li.textContent.trim()));
+  cartList.childNodes.forEach(li => {
+    const [name, price] = li.textContent.split(" - $");
+    cartItems.push({ name, price: parseInt(price) });
+  });
   sessionStorage.setItem("cart", JSON.stringify(cartItems));
+
 }
 
 // Function to load cart data from session storage
