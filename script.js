@@ -1,6 +1,10 @@
 // This is the boilerplate code given for you
 // You can modify this code
 // Product data
+
+// script.js
+
+// Product data
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -9,30 +13,59 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
-// DOM elements
-const productList = document.getElementById("product-list");
-
-// Render product list
+// Function to render products
 function renderProducts() {
-  products.forEach((product) => {
+  const productList = document.getElementById("product-list");
+  productList.innerHTML = "";
+  products.forEach(product => {
     const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
+    li.innerHTML = `${product.name} - $${product.price} <button onclick="addToCart(${product.id})">Add to Cart</button>`;
     productList.appendChild(li);
   });
 }
 
-// Render cart list
-function renderCart() {}
+// Function to add a product to the cart
+function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (product) {
+    const cartList = document.getElementById("cart-list");
+    const li = document.createElement("li");
+    li.textContent = `${product.name} - $${product.price}`;
+    cartList.appendChild(li);
 
-// Add item to cart
-function addToCart(productId) {}
+    // Update session storage
+    updateSessionStorage();
+  }
+}
 
-// Remove item from cart
-function removeFromCart(productId) {}
+// Function to update session storage with cart data
+function updateSessionStorage() {
+  const cartItems = [];
+  const cartList = document.getElementById("cart-list");
+  cartList.childNodes.forEach(li => cartItems.push(li.textContent.trim()));
+  sessionStorage.setItem("cart", JSON.stringify(cartItems));
+}
 
-// Clear cart
-function clearCart() {}
+// Function to load cart data from session storage
+function loadCartFromSessionStorage() {
+  const cartList = document.getElementById("cart-list");
+  const storedCart = sessionStorage.getItem("cart");
+  if (storedCart) {
+    JSON.parse(storedCart).forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      cartList.appendChild(li);
+    });
+  }
+}
 
-// Initial render
+// Function to clear the cart
+function clearCart() {
+  const cartList = document.getElementById("cart-list");
+  cartList.innerHTML = "";
+  sessionStorage.removeItem("cart");
+}
+
+// Initial setup
 renderProducts();
-renderCart();
+loadCartFromSessionStorage();
